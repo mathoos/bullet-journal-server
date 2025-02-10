@@ -9,6 +9,7 @@ exports.signupUser = (req, res, next) => {
         const user = new User({
             email: req.body.email,
             password: hash,
+            statut: req.body.statut,
         });
         user.save()
             .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
@@ -59,6 +60,7 @@ exports.getUserInfo = (req, res, next) => {
         }
         res.status(200).json({
             email: user.email,
+            statut: user.statut,
         });
     })
     .catch(error => res.status(500).json({ error }));
