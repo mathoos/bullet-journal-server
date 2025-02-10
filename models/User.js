@@ -3,10 +3,6 @@ const mongoose = require('mongoose');
 const userSchema = mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    nom: { type: String, required: true },
-    prenom: { type: String, required: true },
-    genre: { type: String, required: true },
-    profilePublicId: { type: String }
 });
 
 // Gestion des erreurs d'unicité proprement

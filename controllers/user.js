@@ -2,6 +2,26 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+exports.signupUser = (req, res, next) => {
+    console.log("Requête d'inscription reçue :", req.body, req.file);
+    bcrypt.hash(req.body.password, 10)
+    .then(hash => {
+        const user = new User({
+            email: req.body.email,
+            password: hash,
+        });
+        user.save()
+            .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+            .catch(error => {
+                console.error("Erreur lors de l'enregistrement de l'utilisateur :", error);
+                res.status(400).json({ error });
+            });
+    })
+    .catch(error => {
+        console.error("Erreur lors du hash du mot de passe :", error);
+        res.status(500).json({ error });
+    });
+};
 
 exports.loginUser = (req, res, next) => {
     User.findOne({ email: req.body.email })
@@ -38,35 +58,9 @@ exports.getUserInfo = (req, res, next) => {
             return res.status(404).json({ error: 'Utilisateur non trouvé !' });
         }
         res.status(200).json({
-            nom: user.nom,
-            prenom: user.prenom,
-            genre: user.genre,
-            profilePublicId: user.profilePublicId
+            email: user.email,
         });
     })
     .catch(error => res.status(500).json({ error }));
-};
-
-exports.updateUserInfo = async (req, res, next) => {
-    const userId = req.auth.userId;  
-
-    const updatedData = {
-        nom: req.body.nom,
-        prenom: req.body.prenom,
-        genre: req.body.genre
-    };
-
-    try {      
-        const user = await User.findByIdAndUpdate(userId, updatedData, { new: true });
-
-        if (!user) {
-            return res.status(404).json({ error: 'Utilisateur non trouvé !' });
-        }
-        res.status(200).json({ message: 'Profil mis à jour avec succès !', user });
-    } 
-    
-    catch (error) {
-        res.status(500).json({ error });
-    }
 };
 
