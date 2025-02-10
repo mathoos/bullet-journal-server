@@ -5,7 +5,6 @@ const dotEnv = require('dotenv');
 dotEnv.config();
 
 const userRoutes = require('./routes/user');
-const path = require('path');
 
 const databaseUrl = process.env.DATABASE_URL;
 mongoose.connect(databaseUrl)
